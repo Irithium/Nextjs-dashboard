@@ -97,11 +97,17 @@ export default {
 
           const hashedPassword = await bcrypt.hash(password, 10);
 
-          const newUser = await sql`
-            INSERT INTO users (name, email, password)
-            VALUES (${name}, ${email}, ${hashedPassword})
-            RETURNING id, name, email
-          `;
+          const [newUser] = await sql<
+            [{ id: string; name: string; email: string }]
+          >`
+  INSERT INTO users (name, email, password)
+  VALUES (
+    ${name as string}, 
+    ${email as string}, 
+    ${hashedPassword as string}
+  )
+  RETURNING id, name, email
+`;
 
           return {
             id: newUser[0].id,
