@@ -7,7 +7,6 @@ const { auth } = NextAuth(authConfig);
 export default auth(async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   const { pathname } = req.nextUrl;
-  console.log("Middleware called", pathname);
 
   if (!token && pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/login", req.url));
