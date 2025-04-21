@@ -29,7 +29,10 @@ if (!process.env.AUTH_SECRET) {
 
 export default {
   providers: [
-    Google,
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
