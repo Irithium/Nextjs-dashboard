@@ -1,10 +1,11 @@
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig, Session } from "next-auth";
 import type { CredentialInput } from "next-auth/providers";
 import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import postgres from "postgres";
 import bcrypt from "bcryptjs";
 import { User } from "./app/lib/definitions";
+import { JWT } from "next-auth/jwt";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -18,6 +19,14 @@ async function getUser(email: string): Promise<User | undefined> {
   }
 }
 
+if (!process.env.POSTGRES_URL) {
+  throw new Error("POSTGRES_URL is not defined");
+}
+
+if (!process.env.AUTH_SECRET) {
+  throw new Error("AUTH_SECRET is not defined");
+}
+
 export default {
   providers: [
     Google,
@@ -29,11 +38,10 @@ export default {
         name: {
           label: "Name",
           type: "text",
-          optional: true,
         } as CredentialInput,
         type: { label: "Type", type: "text" } as CredentialInput,
       },
-      async authorize(credentials: any) {
+      async authorize(credentials) {
         if (!credentials?.type) {
           throw new Error("Missing required fields");
         }
@@ -44,8 +52,16 @@ export default {
 
         const { email, password, name, type } = credentials;
 
+        if (
+          typeof email !== "string" ||
+          typeof password !== "string" ||
+          (name && typeof name !== "string") ||
+          typeof type !== "string"
+        ) {
+          throw new Error("Invalid credentials format");
+        }
+
         if (type === "login") {
-          // Proceso de login
           const user = await sql`
             SELECT * FROM users WHERE email = ${email}
           `;
@@ -58,9 +74,7 @@ export default {
             user[0].password
           );
           if (!isValidPassword) {
-            console.error("Invalid password");
-            return "Invalid password";
-            return null; // Devuelve null si la contraseña es incorrecta
+            throw new Error("Invalid password");
           }
 
           return {
@@ -69,7 +83,6 @@ export default {
             email: user[0].email,
           };
         } else if (type === "register") {
-          // Proceso de registro
           const existingUser = await sql`
             SELECT * FROM users WHERE email = ${email}
           `;
@@ -110,7 +123,7 @@ export default {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
         session.user.id = token.id;
       }
