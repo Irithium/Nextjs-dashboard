@@ -8,7 +8,7 @@ const LoginForm = () => {
       <CredentialLogin />
       <GoogleSignIn />
       <p className="text-sm text-center mt-4 pt-3 pb-1 border-t border-gray-300">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/register" className="text-blue-500">
           Register here
         </Link>
