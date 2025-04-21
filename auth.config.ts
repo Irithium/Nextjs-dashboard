@@ -124,7 +124,7 @@ export default {
     }),
   ],
   secret: process.env.AUTH_SECRET!,
-
+  debug: true,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
