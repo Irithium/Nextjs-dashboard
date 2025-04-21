@@ -129,7 +129,7 @@ export default {
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }: { session: any; token: JWT }) {
       if (token) {
         session.user.id = token.id;
       }
