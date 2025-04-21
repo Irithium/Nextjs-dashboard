@@ -1,13 +1,20 @@
+import { redirect } from "next/navigation";
 import SideNav from "../ui/dashboard/sidenav";
+import { auth } from "@/auth";
 export const experimental_ppr = true;
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
-    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden overflow-scroll">
       <div className="w-full flex-none md:w-64">
         <SideNav />
       </div>

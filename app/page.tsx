@@ -4,8 +4,12 @@ import Link from "next/link";
 import styles from "@/app/ui/home.module.css";
 import { lusitana } from "./ui/fonts";
 import Image from "next/image";
+import { auth } from "@/auth";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+  console.log("Session", session);
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -23,12 +27,29 @@ export default function Page() {
             </a>
             , brought to you by Vercel.
           </p>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Dashboard</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+          {session ? (
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+            >
+              <span>Dashboard</span> <ArrowRightIcon className="w-5 md:w-6" />
+            </Link>
+          ) : (
+            <div className="flex flex-col gap-4 ">
+              <Link
+                href="/register"
+                className=" flex justify-between items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+              >
+                <span>Register</span> <ArrowRightIcon className="w-5 md:w-6" />
+              </Link>
+              <Link
+                href="/login"
+                className="flex justify-between items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+              >
+                <span>Login</span> <ArrowRightIcon className="w-5 md:w-6" />
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
