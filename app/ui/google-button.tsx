@@ -12,7 +12,7 @@ export default async function GoogleSignIn() {
     <form
       action={async () => {
         "use server";
-        await signIn("google", { redirectTo: "/dashboard" });
+        await signIn("google", { redirect: true, redirectTo: "/dashboard" });
       }}
       className="w-full mt-4"
     >
