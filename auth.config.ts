@@ -111,11 +111,12 @@ export default {
   )
   RETURNING id, name, email
 `;
-
+          console.log("New user created:", newUser);
+          console.log("User ID:", newUser.id);
           return {
-            id: newUser[0].id,
-            name: newUser[0].name,
-            email: newUser[0].email,
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
           };
         } else {
           throw new Error("Invalid request type");

@@ -9,7 +9,6 @@ export default auth(async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   console.log("Token:", token);
   console.log("Pathname:", pathname);
-  console.log("Request URL:", req.url);
 
   if (!token && pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/login", req.url));
