@@ -124,7 +124,19 @@ export default {
       },
     }),
   ],
+
   secret: process.env.AUTH_SECRET!,
+  cookies: {
+    sessionToken: {
+      name: "__Secure-authjs.session-token",
+      options: {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+      },
+    },
+  },
   debug: true,
   callbacks: {
     async jwt({ token, user }) {
